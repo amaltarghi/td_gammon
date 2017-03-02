@@ -70,11 +70,14 @@ def load_weights(weights):
     return weights
 
 def main(args=None):
+    #import sys
+    #print("Please choose the type of agent")
+    #line = sys.stdin.readline()
+
     from optparse import OptionParser
     usage = "usage: %prog [options]"
     parser = OptionParser(usage=usage)
-    parser.add_option("-t","--train", dest="train",action="store_true",
-                      default=False,help="Train TD Player")
+
     parser.add_option("-d","--draw",dest="draw",action="store_true",default=False,
                       help="Draw game")
     parser.add_option("-n","--num",dest="numgames",default=1,help="Num games to play")
@@ -87,18 +90,21 @@ def main(args=None):
 
     weights = None
 
-    if opts.train:
-        weights = train()
+
         
     if opts.eval:
         weights = load_weights(weights)
         evalArgs = weights
         evalFn = aiAgents.nnetEval
-        
+    print ("The choosen agent is: " +str(opts.player1))
     p1 = None
-    if opts.player1 == 'random':
+
+
+    if str(opts.player1)=='random':
         p1 = agent.RandomAgent(game.Game.TOKENS[0])
-    elif opts.player1 == 'reflex':
+        #print p1
+        
+    elif opts.player1 == 'TDagent':
         p1 = aiAgents.TDAgent(game.Game.TOKENS[0],evalArgs)
     elif opts.player1 == 'expectimax':
         p1 = aiAgents.ExpectimaxAgent(game.Game.TOKENS[0],evalFn,evalArgs)
@@ -109,15 +115,18 @@ def main(args=None):
 
     p2=aiAgents.TDAgent(game.Game.TOKENS[1],evalArgs)
 #    p2 = aiAgents.ExpectiMiniMaxAgent(game.Game.TOKENS[1],evalFn,evalArgs)
+
+    if opts.player1 == 'random':
+        test([p1,p2],numGames=int(opts.numgames),draw=opts.draw)
+    if opts.player1 == 'TDagent':
+        play([p1,p2])
+    if opts.player1 == 'human':
+        play([p1,p2])
     if p1 is None:
         print "Please specify legitimate player"
         import sys
         sys.exit(1)
 
-    else:
-        play([p1,p2])
-    #else:
-        #test([p1,p2],numGames=int(opts.numgames),draw=opts.draw)
 
 if __name__=="__main__":
     main()
