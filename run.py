@@ -4,6 +4,7 @@ import agent, random, aiAgents
 import numpy as np
 import cPickle as pickle
 from game import Game
+import sys
 
 #g = game.Game()  # get an instance of the class
 
@@ -70,9 +71,9 @@ def load_weights(weights):
     return weights
 
 def main(args=None):
-    #import sys
-    #print("Please choose the type of agent")
-    #line = sys.stdin.readline()
+    import sys
+    print("Please choose the type of agent  human or TDagent or random")
+    line = sys.stdin.readline()
 
     from optparse import OptionParser
     usage = "usage: %prog [options]"
@@ -82,7 +83,7 @@ def main(args=None):
                       help="Draw game")
     parser.add_option("-n","--num",dest="numgames",default=1,help="Num games to play")
     parser.add_option("-p","--player1",dest="player1",
-                      default="human",help="Choose type of first player")
+                      default=str(line.strip()),help="Choose type of first player")
     parser.add_option("-e","--eval",dest="eval",action="store_true",default=True,
                         help="Play with the better eval function for player")
 
