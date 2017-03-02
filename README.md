@@ -1,7 +1,3 @@
-
-
-
-
 # TD-Gammon
 
 
@@ -12,7 +8,7 @@ We are based on this code   https://github.com/awni/backgammon
 
 Run train.py
 
-## Play (human against our agent) or 2 agent and test the model ( random player against our agent)
+## Play
 
 Run run.py
 

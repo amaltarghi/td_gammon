@@ -7,18 +7,21 @@ def extractFeatures(state):
     features = []
     for p in game.players:
         for col in game.grid:
-            feats = [0.]*6
+            feats = [0.]*4
             if len(col)>0 and col[0]==p:
                 for i in xrange(len(col)):
-                    feats[min(i,5)] += 1
+                    feats[min(i,3)] += 1
+                feats[3] = feats[3]/2.0
             features += feats
-        features.append(float(len(game.barPieces[p]))/2.)
-        features.append(float(len(game.offPieces[p]))/game.numPieces[p])
+        features.append(float(len(game.barPieces[p]))/2.0)
+        #features.append(float(len(game.offPieces[p]))/game.numPieces[p])
+        features.append(float(len(game.offPieces[p]))/15.0)
     if player == game.players[0]:
         features += [1.,0.]
     else:
         features += [0.,1.]
     return np.array(features).reshape(-1,1)
+
 
 class TDAgent(agent.Agent, object):
 
