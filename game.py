@@ -54,7 +54,11 @@ class Game:
     def playe(self, players, draw=False):
         player_num = random.randint(0, 1)
         while not self.is_over():
+            if player_num:
+                self.reverse()
             self.next_step(players[player_num], player_num, draw=draw)
+            if player_num:
+                self.reverse()
             player_num = (player_num + 1) % 2
         return self.winner()
 

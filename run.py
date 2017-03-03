@@ -61,14 +61,15 @@ def turn(player,g,roll,draw=False):
 def roll_dice(g):
     return (random.randint(1,g.die), random.randint(1,g.die))
 
-def load_weights(weights):
+def load_weights(weights, weights1):
     if weights is None:
         try:
             import pickle
             weights = pickle.load(open('weights.bin','r'))
+            weights1 = pickle.load(open('weights1.bin','r'))
         except IOError:
             print "You need to train the weights to use the better evaluation function"
-    return weights
+    return weights, weights1
 
 def main(args=None):
     import sys
@@ -90,12 +91,15 @@ def main(args=None):
     (opts,args) = parser.parse_args(args)    
 
     weights = None
+    weights1 = None
 
 
         
-    if opts.eval:
-        weights = load_weights(weights)
+    if opts.eval: 
+        weights , weights1 = load_weights(weights,weights1 )
+
         evalArgs = weights
+        evalArgs1 = weights1
         evalFn = aiAgents.nnetEval
     print ("The choosen agent is: " +str(opts.player1))
     p1 = None
@@ -106,7 +110,7 @@ def main(args=None):
         #print p1
         
     elif opts.player1 == 'TDagent':
-        p1 = aiAgents.TDAgent(game.Game.TOKENS[0],evalArgs)
+        p1 = aiAgents.TDAgent(game.Game.TOKENS[0],evalArgs1)
     elif opts.player1 == 'expectimax':
         p1 = aiAgents.ExpectimaxAgent(game.Game.TOKENS[0],evalFn,evalArgs)
     elif opts.player1 == 'expectiminimax':
@@ -119,6 +123,8 @@ def main(args=None):
 
     if opts.player1 == 'random':
         test([p1,p2],numGames=int(opts.numgames),draw=opts.draw)
+        print ("o is random")
+        print ("x is the agent")
     if opts.player1 == 'TDagent':
         play([p1,p2])
     if opts.player1 == 'human':
