@@ -22,6 +22,9 @@ def train(numGames=100000):
 #def train(numGames=10):
     alpha = 1.0
     lamda = 1
+    e = [np.zeros((50,198)),np.zeros ((1,50)),np.zeros ((50,1)),np.zeros ((1,1))]
+
+
     numFeats = (game.NUMCOLS*4+3)*2
     numHidden = 50
     scales = [np.sqrt(6./(numFeats+numHidden)), np.sqrt(6./(1+numHidden))]
@@ -68,7 +71,7 @@ def train(numGames=100000):
             featsN = aiAgents.extractFeatures((g,players[playernum].player))
             # Mettre a jour les poids "weights" selon le changement de features featsP
             # et featsN
-            updateWeights(featsP,featsN,weights,lamda,alpha)
+            updateWeights(featsP,featsN,weights,lamda,alpha,e)
             # Sortir de la boucle si la partie est finie
             if g.is_over():
                 break
@@ -87,7 +90,7 @@ def train(numGames=100000):
         saveGames(gameData,it)
         gameData = {'winners':[],'length':[],'feats':[]}
         print "Game : %d/%d in %d turns"%(it,numGames,nt)
-        updateWeights(featsP,featsN,weights,alpha,lamda,w=winner)
+        updateWeights(featsP,featsN,weights,alpha,lamda,e,w=winner)
 
         #if it%10000 == 0:
         # save weights
@@ -113,9 +116,10 @@ def backprop(weights,a1,fpropOnly=False):
     del1 = w2.T*del2*a2*(1-a2)
     return v,[del1*a1.T,del2*a2.T,del1,del2]
 
-def updateWeights(featsP,featsN,weights,alpha,lamda,w=None):
+
+def updateWeights(featsP,featsN,weights,alpha,lamda,e,w=None):
     # compute vals and grad
-    e = [np.zeros((50,198)),np.zeros ((1,50))]
+    
 
     vP,grad = backprop(weights,featsP)
 
@@ -125,19 +129,26 @@ def updateWeights(featsP,featsN,weights,alpha,lamda,w=None):
         vN = backprop(weights,featsN,fpropOnly=True)
     else:
         vN = w
-    
+    #a = np.asarray(grad)
+    #print grad
+
+    #print e
     e[0] = lamda * e[0]  + grad[0]
     e [1] = lamda * e[1]  + grad[1]
- 
+    e[2] = lamda * e[2]  + grad[2]
+    e [3] = lamda * e[3]  + grad[3]
+    
+    
     #print e1.shape
     #print e2.shape
     #print type(e1)
 
-    et = np.append(e[0],e[1])
 
     scale = alpha*(vN-vP)
     for w,e in zip(weights,e):
         w += scale*e
+    #print weights
+
 def load_weights(weights):
     if weights is None:
         try:

@@ -349,4 +349,4 @@ class Game:
 if __name__=='__main__':
     g = Game(LAYOUT)
     g.new_game()
-    g.draw((4,3))
+    g.draw()
