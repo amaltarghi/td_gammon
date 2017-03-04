@@ -126,9 +126,13 @@ def main(args=None):
         print ("o is random")
         print ("x is the agent")
     if opts.player1 == 'TDagent':
+        #test([p1,p2],numGames=int(opts.numgames),draw=opts.draw)
+
         play([p1,p2])
     if opts.player1 == 'human':
         play([p1,p2])
+        print ("o is td(0)")
+        print ("x is the agent td(0.5)")
     if p1 is None:
         print "Please specify legitimate player"
         import sys
